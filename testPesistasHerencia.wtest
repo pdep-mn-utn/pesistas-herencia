@@ -1,0 +1,75 @@
+import pesistasHerencia.*
+
+describe "CrossFitter: entrena como cualquier pesista" {
+
+  const crossfitter = new CrossFitter(imm = 50)
+
+  test "entrenar fierros 24 horas suma 1 de imm" {
+    crossfitter.entrenaFierros(24)
+    assert.equals(51, crossfitter.imm())
+  }
+
+  test "entrenar cardio 10 km resta 1 de imm" {
+    crossfitter.entrenaCardio(10)
+    assert.equals(49, crossfitter.imm())
+  }
+
+  test "el cardio nunca deja el imm en negativo" {
+    crossfitter.imm(0.5)
+    crossfitter.entrenaCardio(10)
+    assert.equals(0, crossfitter.imm())
+  }
+
+}
+
+describe "PowerLifter: redefine fierros con super y anula el cardio" {
+
+  const powerlifter = new PowerLifter(imm = 50)
+
+  test "entrenar fierros multiplica las horas por sus turnos diarios" {
+    powerlifter.entrenaFierros(24)
+    assert.equals(53, powerlifter.imm())
+  }
+
+  test "con otros turnos diarios, la ganancia cambia" {
+    const powerlifterDosTurnos = new PowerLifter(imm = 50, turnosDiarios = 2)
+    powerlifterDosTurnos.entrenaFierros(24)
+    assert.equals(52, powerlifterDosTurnos.imm())
+  }
+
+  test "entrenar cardio no modifica su imm" {
+    powerlifter.entrenaCardio(10)
+    assert.equals(50, powerlifter.imm())
+  }
+
+}
+
+describe "BodyBuilder: entra en calor con cardio (self) y después fierros (super)" {
+
+  const bodybuilder = new BodyBuilder(imm = 50)
+
+  test "entrenar fierros resta el cardio de 1 km y suma las horas al cuadrado" {
+    bodybuilder.entrenaFierros(12)
+    assert.equals(55.9, bodybuilder.imm())   // 50 - 0.1 + 144 / 24
+  }
+
+  test "entrenar cardio se comporta como cualquier pesista" {
+    bodybuilder.entrenaCardio(10)
+    assert.equals(49, bodybuilder.imm())
+  }
+
+}
+
+describe "theKing: un objeto que hereda de BodyBuilder" {
+
+  test "entrenar fierros aplica su dosis de testosterona" {
+    theKing.entrenaFierros(6)
+    assert.equals(11763.9, theKing.imm())   // 100 - 0.1 + 6 ** 7 / 24
+  }
+
+  test "entrenar fierros suma entre 1 y 9 poses" {
+    theKing.entrenaFierros(6)
+    assert.that(theKing.posesRealizadas().between(1, 9))
+  }
+
+}
